@@ -16,7 +16,6 @@ from litestar.static_files import StaticFilesConfig
 from litestar.template.config import TemplateConfig
 
 from step6.controller.author import AuthorController
-from step6.controller.author_mako import AuthorMakoController
 from step6.controller.book import BookController
 
 
@@ -56,12 +55,17 @@ async def on_startup() -> None:
         await conn.run_sync(UUIDBase.metadata.create_all)
 
 
+@get(path='/', sync_to_thread=False)
+def index(self, name: Optional[str]) -> Template:
+    return Template(template_name='index.mako.html', context={"name": name})
+
+
 class OpenAPIControllerExtra(OpenAPIController):
     favicon_url = '/static-files/favicon.ico'
 
 
 app = Litestar(
-    route_handlers=[AuthorController, BookController, AuthorMakoController],
+    route_handlers=[AuthorController, BookController, index],
     on_startup=[on_startup],
     openapi_config=OpenAPIConfig(
         title='My API', version='1.0.0',

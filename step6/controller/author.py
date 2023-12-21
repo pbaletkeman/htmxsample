@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
 from advanced_alchemy import SQLAlchemyAsyncRepository
+from litestar.response import Template
 from pydantic import TypeAdapter
 
 from litestar import get
@@ -48,11 +49,24 @@ class AuthorController(Controller):
     path = "/authors"
     tags = ["Author CRUD"]
 
+    @get('/listing')
+    async def index(self, authors_repo: AuthorRepository,
+                    limit_offset: LimitOffset, ) -> Template:
+        results, total = await authors_repo.list_and_count(limit_offset)
+        type_adapter = TypeAdapter(list[Author])
+        site_data = OffsetPagination[Author](
+            items=type_adapter.validate_python(results),
+            total=total,
+            limit=limit_offset.limit,
+            offset=limit_offset.offset,
+        )
+        return Template(template_name='author.index.mako.html', context={'site_data': site_data})
+
     @get()
     async def list_authors(
-        self,
-        authors_repo: AuthorRepository,
-        limit_offset: LimitOffset,
+            self,
+            authors_repo: AuthorRepository,
+            limit_offset: LimitOffset,
     ) -> OffsetPagination[Author]:
         """
         ### List authors ###
@@ -69,9 +83,9 @@ class AuthorController(Controller):
 
     @post()
     async def create_author(
-        self,
-        authors_repo: AuthorRepository,
-        data: AuthorCreate,
+            self,
+            authors_repo: AuthorRepository,
+            data: AuthorCreate,
     ) -> Author:
         """
         ### Create Author ###
@@ -95,12 +109,12 @@ class AuthorController(Controller):
 
     @get(path="with-books/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
     async def get_author_and_books(
-        self,
-        authors_repo: AuthorRepository,
-        author_id: UUID = Parameter(
-            title="Author ID",
-            description="The author to retrieve.",
-        ),
+            self,
+            authors_repo: AuthorRepository,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to retrieve.",
+            ),
     ) -> AuthorAndBooks:
         """
         ### Get Author And Their Books
@@ -111,12 +125,12 @@ class AuthorController(Controller):
 
     @get(path="/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
     async def get_author(
-        self,
-        authors_repo: AuthorRepository,
-        author_id: UUID = Parameter(
-            title="Author ID",
-            description="The author to retrieve.",
-        ),
+            self,
+            authors_repo: AuthorRepository,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to retrieve.",
+            ),
     ) -> Author:
         """
         ### Get Author ###
@@ -163,13 +177,13 @@ class AuthorController(Controller):
         dependencies={"authors_repo": Provide(provide_author_details_repo)},
     )
     async def patch_author(
-        self,
-        authors_repo: AuthorRepository,
-        data: AuthorUpdate,
-        author_id: UUID = Parameter(
-            title="Author ID",
-            description="The author to update.",
-        ),
+            self,
+            authors_repo: AuthorRepository,
+            data: AuthorUpdate,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to update.",
+            ),
     ) -> Author:
         """
         ### Patch Author ###
@@ -193,12 +207,12 @@ class AuthorController(Controller):
 
     @delete(path="/{author_id:uuid}")
     async def delete_author(
-        self,
-        authors_repo: AuthorRepository,
-        author_id: UUID = Parameter(
-            title="Author ID",
-            description="The author to delete.",
-        ),
+            self,
+            authors_repo: AuthorRepository,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to delete.",
+            ),
     ) -> None:
         """
         ### Delete Author ###
