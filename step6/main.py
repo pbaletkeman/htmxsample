@@ -1,16 +1,22 @@
 from __future__ import annotations
 
-from litestar import Litestar
+from typing import Optional
+
+from litestar import Litestar, get
 from litestar.config.compression import CompressionConfig
+from litestar.contrib.mako import MakoTemplateEngine
 from litestar.contrib.sqlalchemy.base import UUIDBase
 from litestar.contrib.sqlalchemy.plugins import AsyncSessionConfig, SQLAlchemyAsyncConfig, SQLAlchemyInitPlugin
 from litestar.di import Provide
 from litestar.openapi import OpenAPIController, OpenAPIConfig
 from litestar.params import Parameter
 from litestar.repository.filters import LimitOffset
+from litestar.response import Template
 from litestar.static_files import StaticFilesConfig
+from litestar.template.config import TemplateConfig
 
 from step6.controller.author import AuthorController
+from step6.controller.author_mako import AuthorMakoController
 from step6.controller.book import BookController
 
 
@@ -55,7 +61,7 @@ class OpenAPIControllerExtra(OpenAPIController):
 
 
 app = Litestar(
-    route_handlers=[AuthorController, BookController],
+    route_handlers=[AuthorController, BookController, AuthorMakoController],
     on_startup=[on_startup],
     openapi_config=OpenAPIConfig(
         title='My API', version='1.0.0',
@@ -66,9 +72,10 @@ app = Litestar(
         use_handler_docstrings=True,
     ),
     static_files_config=[StaticFilesConfig(
-        path='static-files',
-        directories=['static-files']
+        path='static-files',  # path used in links
+        directories=['step6/static-files']  # path on the server
     )],
+    template_config=TemplateConfig(engine=MakoTemplateEngine, directory="step6/templates"),
     plugins=[SQLAlchemyInitPlugin(config=sqlalchemy_config)],
     dependencies={"limit_offset": Provide(provide_limit_offset_pagination)},
     compression_config=CompressionConfig(backend="brotli", brotli_gzip_fallback=True, brotli_quality=5),
