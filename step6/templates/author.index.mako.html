@@ -19,8 +19,7 @@
     % for author in site_data.items:
         <tr>
             <td><input type="checkbox" name="id" value="${author.id}"></td>
-            <td><a href="edit?id=${author.id}">Edit</a></td>
-
+            <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}">edit</button></td>
             <td>
                 ${author.name}
             </td>

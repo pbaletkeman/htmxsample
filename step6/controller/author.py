@@ -49,6 +49,20 @@ class AuthorController(Controller):
     path = "/authors"
     tags = ["Author CRUD"]
 
+    @get(path="/edit/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
+    async def edit_author(
+            self,
+            authors_repo: AuthorRepository,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to retrieve.",
+            ),
+    ) -> Template:
+        """
+        """
+        obj = await authors_repo.get(author_id)
+        return Template(template_name='author.edit.mako.html', context={'site_data': obj})
+
     @get('/listing')
     async def index(self, authors_repo: AuthorRepository,
                     limit_offset: LimitOffset, ) -> Template:
