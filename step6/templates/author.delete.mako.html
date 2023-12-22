@@ -1,26 +1,23 @@
 <%inherit file="script.mako.html"/>
 <td>
-    <button id="show${author.id}" class="show" title="edit ${author.id}">edit</button>
+    <button id="show${author.id}" class="show" title="delete ${author.id}">delete</button>
     <dialog id="dialog${author.id}" class="dialog">
-        <h4>Edit Author</h4>
+        <h4>Confirm Delete Author</h4>
         <form >
             <div>
                 <div>
-                    Name:
-                    <input type="text" name="name" value="${author.name}">
+                    Name: ${author.name}
                 </div>
                 <div>
-                    Date Of Birth:
-                    <input type="date" name="dob" value="${author.dob}">
+                    Date Of Birth: ${author.dob}
                 </div>
                 <div>
                     <button id="close${author.id}" class="close">close</button>
-                    <button hx-put="update/${author.id}"
-                            hx-swap="outerHTML"
-                            hx-ext="json-enc"
-                            hx-target="closest tr"
+                    <button hx-delete="${author.id}"
+                            onclick="document.getElementById('dialog${author.id}').close();
+                            document.getElementById('authorRow${author.id}').remove();"
                     >
-                            Save
+                            Delete
                     </button>
                 </div>
             </div>

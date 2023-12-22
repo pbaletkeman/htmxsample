@@ -56,7 +56,7 @@ async def on_startup() -> None:
 
 
 @get(path='/', sync_to_thread=False)
-def index(self, name: Optional[str]) -> Template:
+def index(name: Optional[str]) -> Template:
     return Template(template_name='index.mako.html', context={"name": name})
 
 

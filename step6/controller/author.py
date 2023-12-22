@@ -50,6 +50,20 @@ class AuthorUIController(Controller):
     path = "/authors"
     tags = ["Author UI"]
 
+    @get(path="/delete/{author_id:uuid}")
+    async def delete_author(
+            self,
+            authors_repo: AuthorRepository,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to retrieve.",
+            ),
+    ) -> Template:
+        """
+        """
+        obj = await authors_repo.get(author_id)
+        return Template(template_name='author.delete.mako.html', context={'author': obj})
+
     @post('/new')
     async def create_author(
             self,
@@ -71,10 +85,11 @@ class AuthorUIController(Controller):
         ```
         """
         # handle empty date values
-        if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
-            data.dob = None
-        else:
-            data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+        if data.dob:
+            if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
+                data.dob = None
+            else:
+                data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
 
         obj = await authors_repo.add(
             AuthorModel(**data.model_dump(exclude_unset=True, exclude_none=True)),
@@ -84,7 +99,6 @@ class AuthorUIController(Controller):
 
     @put(
         path="/update/{author_id:uuid}",
-        dependencies={"authors_repo": Provide(provide_author_details_repo)},
     )
     async def put_author(
             self,
@@ -113,7 +127,7 @@ class AuthorUIController(Controller):
 
         return Template(template_name='author.edit-row.mako.html', context={'author': obj})
 
-    @get(path="/edit/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
+    @get(path="/edit/{author_id:uuid}")
     async def edit_author(
             self,
             authors_repo: AuthorRepository,
@@ -143,10 +157,11 @@ class AuthorUIController(Controller):
 
 async def author_put_helper(author_id: UUID, authors_repo: AuthorRepository, data: AuthorUpdate):
     # handle empty date values
-    if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
-        data.dob = None
-    else:
-        data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+    if data.dob:
+        if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
+            data.dob = None
+        else:
+            data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
     raw_obj = data.model_dump(exclude_unset=False, exclude_none=False)
     raw_obj.update({"id": author_id})
     obj = await authors_repo.update(AuthorModel(**raw_obj))
@@ -206,7 +221,7 @@ class AuthorController(Controller):
         await authors_repo.session.commit()
         return Author.model_validate(obj)
 
-    @get(path="with-books/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
+    @get(path="with-books/{author_id:uuid}")
     async def get_author_and_books(
             self,
             authors_repo: AuthorRepository,
@@ -222,7 +237,7 @@ class AuthorController(Controller):
         obj = await authors_repo.get(author_id)
         return AuthorAndBooks.model_validate(obj)
 
-    @get(path="/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
+    @get(path="/{author_id:uuid}")
     async def get_author(
             self,
             authors_repo: AuthorRepository,
@@ -239,8 +254,7 @@ class AuthorController(Controller):
         return Author.model_validate(obj)
 
     @put(
-        path="/{author_id:uuid}",
-        dependencies={"authors_repo": Provide(provide_author_details_repo)},
+        path="/{author_id:uuid}"
     )
     async def put_author(
             self,
@@ -267,10 +281,9 @@ class AuthorController(Controller):
         """
         return await author_put_helper(author_id, authors_repo, data)
 
-
     @patch(
-        path="/{author_id:uuid}",
-        dependencies={"authors_repo": Provide(provide_author_details_repo)},
+        path="/{author_id:uuid}"
+
     )
     async def patch_author(
             self,
