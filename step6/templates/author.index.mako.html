@@ -55,24 +55,28 @@
         <tr><th><input type="checkbox" name="master-check"></th><th></th><th></th><th>Name</th><th>dob</th><th>id</th></tr>
     </thead>
     <tbody class="authorListing">
-        % for author in site_data.items:
-            <tr id="authorRow${author.id}">
-                <td><input type="checkbox" name="id" value="${author.id}"></td>
-                <td><button hx-get="delete/${author.id}" hx-swap="outerHTML" title="delete ${author.id}" hx-target="closest td">delete</button></td>
-                <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}" hx-target="closest td">edit</button></td>
-                <td>
-                    ${author.name}
-                </td>
-                <td>
-                    % if author.dob:
-                        ${author.dob.strftime('%Y-%m-%d')}
-                    % endif
-                </td>
-                <td>
-                    ${author.id}
-                </td>
-            </tr>
-        % endfor
+        % if len(site_data.items) > 0:
+            % for author in site_data.items:
+                <tr id="authorRow${author.id}">
+                    <td><input type="checkbox" name="id" value="${author.id}"></td>
+                    <td><button hx-get="delete/${author.id}" hx-swap="outerHTML" title="delete ${author.id}" hx-target="closest td">delete</button></td>
+                    <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}" hx-target="closest td">edit</button></td>
+                    <td>
+                        ${author.name}
+                    </td>
+                    <td>
+                        % if author.dob:
+                            ${author.dob.strftime('%Y-%m-%d')}
+                        % endif
+                    </td>
+                    <td>
+                        ${author.id}
+                    </td>
+                </tr>
+            % endfor
+        % else:
+            <tr><td colspan="6">&nbsp;</td></tr>
+        % endif
     </tbody>
 </table>
 <div>

@@ -14,11 +14,14 @@
                 <div>
                     <button id="close${author.id}" class="close">close</button>
                     <button hx-delete="${author.id}"
-                            onclick="document.getElementById('dialog${author.id}').close();
-                            document.getElementById('authorRow${author.id}').remove();"
+                            hx-target="closest tr"
+                            hx-swap="outerHTML"
+                            onclick="document.getElementById('dialog${author.id}').close();"
+
                     >
                             Delete
                     </button>
+                    <!-- document.getElementById('authorRow${author.id}').remove(); -->
                 </div>
             </div>
         </form>

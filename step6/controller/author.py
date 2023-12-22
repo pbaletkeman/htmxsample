@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
+import advanced_alchemy
 import litestar
 from advanced_alchemy import SQLAlchemyAsyncRepository
 from litestar.response import Template
@@ -85,12 +86,13 @@ class AuthorUIController(Controller):
         ```
         """
         # handle empty date values
-        if data.dob:
-            if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
-                data.dob = None
-            else:
-                data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
-
+        # if data.dob:
+        #     if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
+        #         data.dob = None
+        #     elif len(data.dob) > 5:
+        #         data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+        #     else:
+        #         data.dob = None
         obj = await authors_repo.add(
             AuthorModel(**data.model_dump(exclude_unset=True, exclude_none=True)),
         )
@@ -157,11 +159,11 @@ class AuthorUIController(Controller):
 
 async def author_put_helper(author_id: UUID, authors_repo: AuthorRepository, data: AuthorUpdate):
     # handle empty date values
-    if data.dob:
-        if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
-            data.dob = None
-        else:
-            data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+    # if data.dob:
+    #     if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
+    #         data.dob = None
+    #     else:
+    #         data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
     raw_obj = data.model_dump(exclude_unset=False, exclude_none=False)
     raw_obj.update({"id": author_id})
     obj = await authors_repo.update(AuthorModel(**raw_obj))
