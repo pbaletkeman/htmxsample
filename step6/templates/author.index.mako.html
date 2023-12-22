@@ -16,8 +16,7 @@
 <button onclick="document.getElementById('dialogNew').showModal();">Add New</button>
 <dialog id="dialogNew" class="dialog">
     <h4>New Author</h4>
-
-    <form>
+    <form id="dialogNewForm">
         <div>
             <div>
                 Name:
@@ -35,8 +34,10 @@
                     hx-target=".authorListing tr:first-child"
                     onclick="document.getElementById('dialogNew').close();"
                 >
-                Save</button>
 
+                Save
+                </button>
+                <!--                          onclick="document.getElementById('dialogNewForm').reset() -->
             </div>
         </div>
     </form>
