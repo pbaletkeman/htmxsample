@@ -29,7 +29,7 @@ class Author(BaseModel):
 
 class AuthorCreate(BaseModel):
     name: str
-    dob: date |  None = None
+    dob: date | str | None = None
 
 
 class AuthorUpdate(BaseModel):

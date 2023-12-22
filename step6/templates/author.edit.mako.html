@@ -1,6 +1,7 @@
 <%inherit file="script.mako.html"/>
 
 <dialog id="dialog${author.id}" class="dialog">
+    <h4>Edit Author</h4>
     <form >
         <div>
             <div>
@@ -14,7 +15,6 @@
             <div>
                 <button id="close${author.id}" class="close">close</button>
                 <button hx-put="update/${author.id}"
-                        type="button"
                         hx-swap="outerHTML"
                         hx-ext="json-enc"
                         hx-target="closest tr"

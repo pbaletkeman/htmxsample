@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
+import litestar
 from advanced_alchemy import SQLAlchemyAsyncRepository
 from litestar.response import Template
 from pydantic import TypeAdapter
@@ -49,6 +50,38 @@ class AuthorUIController(Controller):
     path = "/authors"
     tags = ["Author UI"]
 
+    @post('/new')
+    async def create_author(
+            self,
+            authors_repo: AuthorRepository,
+            data: AuthorCreate,
+    ) -> Template:
+        """
+        ### Create Author ###
+        Create a new **author**.
+        ```Example Data:
+        {
+          "name": "John Q Public",
+          "dob": "2020-01-04"
+        }
+        ===================
+        {
+          "name": "Joe Doe"
+        }
+        ```
+        """
+        # handle empty date values
+        if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
+            data.dob = None
+        else:
+            data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+
+        obj = await authors_repo.add(
+            AuthorModel(**data.model_dump(exclude_unset=True, exclude_none=True)),
+        )
+        await authors_repo.session.commit()
+        return Template(template_name='author.edit-row.mako.html', context={'author': Author.model_validate(obj)})
+
     @put(
         path="/update/{author_id:uuid}",
         dependencies={"authors_repo": Provide(provide_author_details_repo)},
@@ -76,10 +109,6 @@ class AuthorUIController(Controller):
         }
         ```
         """
-        if 'dob' in data:
-            the_date = data.get('dob')
-            if 'mm' not in the_date and 'dd' not in the_date and 'yy' not in the_date:
-                data.popitem('dob')
         obj = await author_put_helper(author_id, authors_repo, data)
 
         return Template(template_name='author.edit-row.mako.html', context={'author': obj})
@@ -113,6 +142,7 @@ class AuthorUIController(Controller):
 
 
 async def author_put_helper(author_id: UUID, authors_repo: AuthorRepository, data: AuthorUpdate):
+    # handle empty date values
     if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
         data.dob = None
     else:

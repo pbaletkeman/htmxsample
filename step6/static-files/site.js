@@ -9,5 +9,7 @@ function handleAuthorDialog(id){
 
     closeBtn.addEventListener("click", () => {
         dialogElem.close();
+        /* need to prevent the default action otherwise the URL parameters are screwed up */
+        event.preventDefault();
     });
 }
