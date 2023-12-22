@@ -19,12 +19,14 @@
     % for author in site_data.items:
         <tr>
             <td><input type="checkbox" name="id" value="${author.id}"></td>
-            <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}">edit</button></td>
+            <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}" hx-target="closest td">edit</button></td>
             <td>
                 ${author.name}
             </td>
             <td>
-                ${author.dob.strftime('%Y-%m-%d')}
+                % if author.dob:
+                    ${author.dob.strftime('%Y-%m-%d')}
+                % endif
             </td>
             <td>
                 ${author.id}

@@ -1,29 +1,24 @@
 <%inherit file="script.mako.html"/>
 
-<dialog id="dialog${site_data.id}" class="dialog">
+<dialog id="dialog${author.id}" class="dialog">
     <form >
         <div>
             <div>
                 Name:
-                <input type="text" name="name" value="${site_data.name}">
+                <input type="text" name="name" value="${author.name}">
             </div>
             <div>
                 Date Of Birth:
-                <input type="date" name="dob" value="${site_data.dob}">
+                <input type="date" name="dob" value="${author.dob}">
             </div>
             <div>
-                <button id="close${site_data.id}" class="close">close</button>
-<!--                <button onclick="sendData()" type="button">-->
-<!--                        Save-->
-<!--                </button>-->
-                <button hx-put="${site_data.id}"
+                <button id="close${author.id}" class="close">close</button>
+                <button hx-put="update/${author.id}"
                         type="button"
-                        hx-swap="none"
-                        hx-ext='json-enc'
-                        hx-on:htmx:after-request="doSomething()"
-
+                        hx-swap="outerHTML"
+                        hx-ext="json-enc"
+                        hx-target="closest tr"
                 >
-<!--                     hx-on::after-request="alert('Done making a request!')"-->
                         Save
                 </button>
             </div>
@@ -31,28 +26,9 @@
     </form>
 </dialog>
 
-<button id="show${site_data.id}" class="show" title="edit ${site_data.id}">edit</button>
+<button id="show${author.id}" class="show" title="edit ${author.id}">edit</button>
 
 <script type="text/javascript">
-    handleAuthorDialog('${site_data.id}');
-    document.getElementById("dialog${site_data.id}").showModal();
-    async function sendData(data) {
-      try {
-        const response = await fetch("${site_data.id}", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-        console.log("Success:", result);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-    doSomething = function doSomething() {
-      console.log('do something');
-    };
+    handleAuthorDialog('${author.id}');
+    document.getElementById("dialog${author.id}").showModal();
 </script>

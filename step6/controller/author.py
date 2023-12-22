@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
@@ -18,6 +19,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from step6.model.author import AuthorModel, Author, AuthorCreate, AuthorUpdate, AuthorAndBooks
+from datetime import datetime
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,12 +44,45 @@ async def provide_author_details_repo(db_session: AsyncSession) -> AuthorReposit
     )
 
 
-class AuthorController(Controller):
-    """Author CRUD"""
-
+class AuthorUIController(Controller):
     dependencies = {"authors_repo": Provide(provide_authors_repo)}
     path = "/authors"
-    tags = ["Author CRUD"]
+    tags = ["Author UI"]
+
+    @put(
+        path="/update/{author_id:uuid}",
+        dependencies={"authors_repo": Provide(provide_author_details_repo)},
+    )
+    async def put_author(
+            self,
+            authors_repo: AuthorRepository,
+            data: AuthorUpdate,
+            author_id: UUID = Parameter(
+                title="Author ID",
+                description="The author to update.",
+            ),
+    ) -> Template:
+        """
+        ### Put Author
+        Update an **author**, including empty values.
+        ```Example Data:
+        {
+          "name": "John Q Public",
+          "dob": "2020-01-04"
+        }
+        ===================
+        {
+          "name": "Joe Doe"
+        }
+        ```
+        """
+        if 'dob' in data:
+            the_date = data.get('dob')
+            if 'mm' not in the_date and 'dd' not in the_date and 'yy' not in the_date:
+                data.popitem('dob')
+        obj = await author_put_helper(author_id, authors_repo, data)
+
+        return Template(template_name='author.edit-row.mako.html', context={'author': obj})
 
     @get(path="/edit/{author_id:uuid}", dependencies={"authors_repo": Provide(provide_author_details_repo)})
     async def edit_author(
@@ -61,7 +96,7 @@ class AuthorController(Controller):
         """
         """
         obj = await authors_repo.get(author_id)
-        return Template(template_name='author.edit.mako.html', context={'site_data': obj})
+        return Template(template_name='author.edit.mako.html', context={'author': obj})
 
     @get('/listing')
     async def index(self, authors_repo: AuthorRepository,
@@ -75,6 +110,26 @@ class AuthorController(Controller):
             offset=limit_offset.offset,
         )
         return Template(template_name='author.index.mako.html', context={'site_data': site_data})
+
+
+async def author_put_helper(author_id: UUID, authors_repo: AuthorRepository, data: AuthorUpdate):
+    if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
+        data.dob = None
+    else:
+        data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+    raw_obj = data.model_dump(exclude_unset=False, exclude_none=False)
+    raw_obj.update({"id": author_id})
+    obj = await authors_repo.update(AuthorModel(**raw_obj))
+    await authors_repo.session.commit()
+    return Author.model_validate(obj)
+
+
+class AuthorController(Controller):
+    """Author CRUD"""
+
+    dependencies = {"authors_repo": Provide(provide_authors_repo)}
+    path = "/authors"
+    tags = ["Author CRUD"]
 
     @get()
     async def list_authors(
@@ -180,11 +235,8 @@ class AuthorController(Controller):
         }
         ```
         """
-        raw_obj = data.model_dump(exclude_unset=False, exclude_none=False)
-        raw_obj.update({"id": author_id})
-        obj = await authors_repo.update(AuthorModel(**raw_obj))
-        await authors_repo.session.commit()
-        return Author.model_validate(obj)
+        return await author_put_helper(author_id, authors_repo, data)
+
 
     @patch(
         path="/{author_id:uuid}",

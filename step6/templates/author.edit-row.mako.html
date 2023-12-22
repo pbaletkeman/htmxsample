@@ -1,0 +1,16 @@
+<tr id="authorRow${author.id}">
+    <td><input type="checkbox" name="id" value="${author.id}"></td>
+    <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}">edit</button></td>
+    <td>
+        ${author.name}
+    </td>
+    <td>
+        % if author.dob:
+            ${author.dob.strftime('%Y-%m-%d')}
+        % endif
+    </td>
+    <td>
+        ${author.id}
+    </td>
+</tr>
+
