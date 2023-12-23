@@ -87,7 +87,7 @@
 </table>
 <div>
     <h5>Pages</h5>
-    % for num in range(1,round(site_data.total/2 + 0.51)+1):
-        <a href="listing?currentPage=${num}&pageSize=2">${num}</a>
+    % for num in range(1,round(site_data.total/4 + 0.51)+1):
+        <a href="listing?currentPage=${num}&pageSize=4">${num}</a>
     % endfor
 </div>
