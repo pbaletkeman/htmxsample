@@ -58,7 +58,18 @@
         List Of Authors
     </caption>
     <thead>
-        <tr><th><input type="checkbox" name="master-check"></th><th></th><th></th><th>Name</th><th>dob</th><th>id</th></tr>
+        <tr>
+            <th>
+                <!-- mass select/deselect checkboxes -->
+                <input type="checkbox" name="master-check" _="on click
+                   set value to ((<input[name='id']:not(:checked)/>).length == 0)
+                   repeat in <input[name='id']/>
+                     set it.checked to value
+                     it.click()
+                   end">
+            </th>
+            <th></th><th></th><th>Name</th><th>dob</th><th>id</th>
+        </tr>
     </thead>
     <tbody class="authorListing" id="authorListing">
         % if len(site_data.items) > 0:
@@ -84,6 +95,13 @@
             <tr><td colspan="6">&nbsp;</td></tr>
         % endif
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="6">
+                5/10 records
+            </td>
+        </tr>
+    </tfoot>
 </table>
 <div>
     <h5>Pages</h5>
