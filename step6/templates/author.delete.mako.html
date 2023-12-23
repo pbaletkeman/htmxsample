@@ -15,7 +15,7 @@
                     <button id="close${author.id}" class="close">close</button>
                     <button hx-delete="${author.id}"
                             hx-target="#authorRow${author.id}"
-                            hx-swap="delete"
+                            hx-swap="delete swap:1s"
                     >
                             Delete
                     </button>
