@@ -40,7 +40,7 @@
         </div>
     </form>
     <script>
-        /* reset the new author form after submission */
+        /* reset the new author form after submission and close the dialog */
         document.body.addEventListener('htmx:afterSwap', function(evt) {
             const form = document.querySelector("#dialogNewForm");
             form.reset();
