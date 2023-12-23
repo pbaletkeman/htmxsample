@@ -32,16 +32,21 @@
                     hx-swap="beforebegin"
                     hx-ext="json-enc"
                     hx-target=".authorListing tr:first-child"
-                    onclick="document.getElementById('dialogNew').close();"
                 >
 
                 Save
                 </button>
-                <!--                          onclick="document.getElementById('dialogNewForm').reset() -->
             </div>
         </div>
     </form>
     <script>
+        /* reset the new author form after submission */
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            const form = document.querySelector("#dialogNewForm");
+            form.reset();
+            document.getElementById('dialogNew').close();
+        });
+
         /* need to prevent the default action otherwise the URL parameters are screwed up */
         document.getElementById("closeNew").addEventListener("click", function(event){
             event.preventDefault()
