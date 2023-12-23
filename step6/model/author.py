@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from uuid import UUID
 
 from advanced_alchemy.base import UUIDBase
 from sqlalchemy.orm import Mapped, relationship
 
 from step6.common import BaseModel
-from step6.model.book import BookModel, Book, BookWithOutAuthor
+from step6.model.book import BookModel, BookWithOutAuthor
 
 
 class AuthorModel(UUIDBase):
@@ -15,6 +15,7 @@ class AuthorModel(UUIDBase):
     __tablename__ = "author"
     name: Mapped[str]
     dob: Mapped[date | None]
+
     books: Mapped[list[BookModel]] = relationship(back_populates="author", lazy="noload")
 
     def __str__(self):
@@ -29,12 +30,12 @@ class Author(BaseModel):
 
 class AuthorCreate(BaseModel):
     name: str
-    dob: date | None = None
+    dob: date | str | None = None
 
 
 class AuthorUpdate(BaseModel):
     name: str | None = None
-    dob: date | None = None
+    dob: date | str | None = None
 
 
 class AuthorAndBooks(BaseModel):

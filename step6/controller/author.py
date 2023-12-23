@@ -46,6 +46,23 @@ async def provide_author_details_repo(db_session: AsyncSession) -> AuthorReposit
     )
 
 
+async def handle_empty_dates(field):
+    """
+    sometimes the date is an empty string, other times its formatted like dd/mm/yy
+    this takes care of that
+    """
+    if field:
+        if 'mm' in field or 'dd' in field or 'yy' in field or field == '':
+            field = None
+        elif len(field) > 5:
+            field = datetime.strptime(field, '%Y-%m-%d')
+        else:
+            field = None
+    else:
+        field = None
+    return field
+
+
 class AuthorUIController(Controller):
     dependencies = {"authors_repo": Provide(provide_authors_repo)}
     path = "/authors"
@@ -86,13 +103,7 @@ class AuthorUIController(Controller):
         ```
         """
         # handle empty date values
-        # if data.dob:
-        #     if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
-        #         data.dob = None
-        #     elif len(data.dob) > 5:
-        #         data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
-        #     else:
-        #         data.dob = None
+        data.dob = await handle_empty_dates(data.dob)
         obj = await authors_repo.add(
             AuthorModel(**data.model_dump(exclude_unset=True, exclude_none=True)),
         )
@@ -158,12 +169,7 @@ class AuthorUIController(Controller):
 
 
 async def author_put_helper(author_id: UUID, authors_repo: AuthorRepository, data: AuthorUpdate):
-    # handle empty date values
-    # if data.dob:
-    #     if 'mm' in data.dob or 'dd' in data.dob or 'yy' in data.dob or data.dob == '':
-    #         data.dob = None
-    #     else:
-    #         data.dob = datetime.strptime(data.dob, '%Y-%m-%d')
+    data.dob = await handle_empty_dates(data.dob)
     raw_obj = data.model_dump(exclude_unset=False, exclude_none=False)
     raw_obj.update({"id": author_id})
     obj = await authors_repo.update(AuthorModel(**raw_obj))
