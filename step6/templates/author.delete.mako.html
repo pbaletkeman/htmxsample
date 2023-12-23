@@ -14,10 +14,8 @@
                 <div>
                     <button id="close${author.id}" class="close">close</button>
                     <button hx-delete="${author.id}"
-                            hx-target="closest tr"
-                            hx-swap="outerHTML"
-                            onclick="document.getElementById('dialog${author.id}').close();"
-
+                            hx-target="#authorRow${author.id}"
+                            hx-swap="delete"
                     >
                             Delete
                     </button>
@@ -27,9 +25,11 @@
         </form>
     </dialog>
 </td>
-
+<!-- document.querySelector("#authorRowa5cba3ec-f586-4f20-84ec-9b46099ed900") -->
 
 <script type="text/javascript">
     handleAuthorDialog('${author.id}');
     document.getElementById("dialog${author.id}").showModal();
+
+
 </script>

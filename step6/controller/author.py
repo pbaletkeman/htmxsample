@@ -6,6 +6,7 @@ from uuid import UUID
 
 import advanced_alchemy
 import litestar
+from litestar.status_codes import HTTP_200_OK
 from advanced_alchemy import SQLAlchemyAsyncRepository
 from litestar.response import Template
 from pydantic import TypeAdapter
@@ -322,7 +323,7 @@ class AuthorController(Controller):
         await authors_repo.session.commit()
         return Author.model_validate(obj)
 
-    @delete(path="/{author_id:uuid}")
+    @delete(path="/{author_id:uuid}", status_code=HTTP_200_OK)
     async def delete_author(
             self,
             authors_repo: AuthorRepository,

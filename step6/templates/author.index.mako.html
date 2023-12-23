@@ -40,12 +40,12 @@
         </div>
     </form>
     <script>
-        /* reset the new author form after submission and close the dialog */
-        document.body.addEventListener('htmx:afterSwap', function(evt) {
+
+        /* document.body.addEventListener('htmx:afterSwap',  function(evt) {
             const form = document.querySelector("#dialogNewForm");
             form.reset();
             document.getElementById('dialogNew').close();
-        });
+        }); */
 
         /* need to prevent the default action otherwise the URL parameters are screwed up */
         document.getElementById("closeNew").addEventListener("click", function(event){
@@ -60,7 +60,7 @@
     <thead>
         <tr><th><input type="checkbox" name="master-check"></th><th></th><th></th><th>Name</th><th>dob</th><th>id</th></tr>
     </thead>
-    <tbody class="authorListing">
+    <tbody class="authorListing" id="authorListing">
         % if len(site_data.items) > 0:
             % for author in site_data.items:
                 <tr id="authorRow${author.id}">
@@ -91,3 +91,19 @@
         <a href="listing?currentPage=${num}&pageSize=4">${num}</a>
     % endfor
 </div>
+<script>
+    /* reset the new author form after submission and close the dialog */
+    tbody = document.getElementById("authorListing")
+    tbody.addEventListener('htmx:afterSwap',  function(evt) {
+        const form = document.querySelector("#dialogNewForm");
+        form.reset();
+        document.getElementById('dialogNew').close();
+    });
+    /* OR apply to whole document
+    document.body.addEventListener('htmx:afterSwap',  function(evt) {
+        const form = document.querySelector("#dialogNewForm");
+        form.reset();
+        document.getElementById('dialogNew').close();
+    });
+    */
+</script>
