@@ -60,7 +60,7 @@
         <tr>
             <th>
                 <!-- mass select/deselect checkboxes -->
-                <input type="checkbox" name="master-check" _="on click
+                <input type="checkbox" name="masterCheck" _="on click
                    set value to ((<input[name='id']:not(:checked)/>).length == 0)
                    set selectedCount to 0
                    repeat in <input[name='id']/>
@@ -78,7 +78,11 @@
         % if len(site_data.items) > 0:
             % for author in site_data.items:
                 <tr id="authorRow${author.id}">
-                    <td><input type="checkbox" name="id" value="${author.id}"></td>
+                    <td>
+                        <input type="checkbox" name="id" value="${author.id}" _="on click
+                        countRows()
+                        ">
+                    </td>
                     <td><button hx-get="delete/${author.id}" hx-swap="outerHTML" title="delete ${author.id}" hx-target="closest td">delete</button></td>
                     <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}" hx-target="closest td">edit</button></td>
                     <td>
@@ -112,3 +116,17 @@
         <a href="listing?currentPage=${num}&pageSize=4">${num}</a>
     % endfor
 </div>
+
+<script type="text/hyperscript">
+    def countRows()
+        set selectedCount to (<input[name='id']:checked/>).length
+        put selectedCount into (<span[id='selectedCount']/>)
+
+        set totalCount to (<input[name='id']/>).length
+        put totalCount into (<span[id='totalRecords']/>)
+
+        if totalCount is selectedCount then
+            set x to (<input[name='masterCheck']/>)
+            set x.checked to true
+    end
+</script>
