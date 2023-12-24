@@ -59,3 +59,11 @@ tr.htmx-swapping td {
   opacity: 0;
   transition: opacity 1s ease-out;
 }
+
+tr.htmx-added {
+  opacity: 0;
+}
+tr {
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}

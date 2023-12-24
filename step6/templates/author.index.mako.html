@@ -118,6 +118,7 @@
 
 <script type="text/hyperscript">
     def countRows()
+        -- wait for animations to be complete
         wait 1.1s then
         set selectedCount to (<input[name='id']:checked/>).length
         put selectedCount into (<span[id='selectedCount']/>)
