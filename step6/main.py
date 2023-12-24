@@ -81,6 +81,6 @@ app = Litestar(
     )],
     template_config=TemplateConfig(engine=MakoTemplateEngine, directory="step6/templates"),
     plugins=[SQLAlchemyInitPlugin(config=sqlalchemy_config)],
-    dependencies={"limit_offset": Provide(provide_limit_offset_pagination)},
+    dependencies={"limit_offset": Provide(provide_limit_offset_pagination, sync_to_thread=False)},
     compression_config=CompressionConfig(backend="brotli", brotli_gzip_fallback=True, brotli_quality=5),
 )

@@ -32,20 +32,19 @@
                     hx-swap="beforebegin"
                     hx-ext="json-enc"
                     hx-target=".authorListing tr:first-child"
+                    hx-on::after-request="closeAndReset()"
                 >
-
                 Save
                 </button>
             </div>
         </div>
     </form>
     <script>
-
-        /* document.body.addEventListener('htmx:afterSwap',  function(evt) {
-            const form = document.querySelector("#dialogNewForm");
-            form.reset();
+        function closeAndReset(){
+            /* reset the new author form after submission and close the dialog */
+            document.querySelector("#dialogNewForm").reset();
             document.getElementById('dialogNew').close();
-        }); */
+        }
 
         /* need to prevent the default action otherwise the URL parameters are screwed up */
         document.getElementById("closeNew").addEventListener("click", function(event){
@@ -113,19 +112,3 @@
         <a href="listing?currentPage=${num}&pageSize=4">${num}</a>
     % endfor
 </div>
-<script>
-    /* reset the new author form after submission and close the dialog */
-    tbody = document.getElementById("authorListing")
-    tbody.addEventListener('htmx:afterSwap',  function(evt) {
-        const form = document.querySelector("#dialogNewForm");
-        form.reset();
-        document.getElementById('dialogNew').close();
-    });
-    /* OR apply to whole document
-    document.body.addEventListener('htmx:afterSwap',  function(evt) {
-        const form = document.querySelector("#dialogNewForm");
-        form.reset();
-        document.getElementById('dialogNew').close();
-    });
-    */
-</script>
