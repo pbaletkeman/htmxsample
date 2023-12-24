@@ -16,6 +16,7 @@
                     <button hx-delete="${author.id}"
                             hx-target="#authorRow${author.id}"
                             hx-swap="delete swap:1s"
+                            onclick="countRows()"
                     >
                             Delete
                     </button>

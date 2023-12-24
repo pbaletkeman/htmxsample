@@ -61,15 +61,14 @@
             <th>
                 <!-- mass select/deselect checkboxes -->
                 <input type="checkbox" name="masterCheck" _="on click
-                   set value to ((<input[name='id']:not(:checked)/>).length == 0)
-                   set selectedCount to 0
-                   repeat in <input[name='id']/>
-                      set it.checked to value
-                      it.click()
-                      increment selectedCount
-                   end
-                   put selectedCount into the next (<span[id='selectedCount']/>)
-                   ">
+                    set selectedCount to (<input[name='id']:not(:checked)/>).length
+                    set value to (selectedCount == 0)
+                    repeat in <input[name='id']/>
+                        set it.checked to value
+                        it.click()
+                    end
+                    put selectedCount into the next (<span[id='selectedCount']/>)
+                ">
             </th>
             <th></th><th></th><th>Name</th><th>dob</th><th>id</th>
         </tr>
@@ -119,6 +118,7 @@
 
 <script type="text/hyperscript">
     def countRows()
+        wait 1.1s then
         set selectedCount to (<input[name='id']:checked/>).length
         put selectedCount into (<span[id='selectedCount']/>)
 
