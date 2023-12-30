@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import datetime
+import uuid
+
+from faker import Faker
 from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
@@ -224,6 +227,9 @@ class AuthorController(Controller):
         }
         ```
         """
+        return await self.add_helper(authors_repo, data)
+
+    async def add_helper(self, authors_repo, data):
         obj = await authors_repo.add(
             AuthorModel(**data.model_dump(exclude_unset=True, exclude_none=True)),
         )
@@ -338,3 +344,15 @@ class AuthorController(Controller):
         """
         _ = await authors_repo.delete(author_id)
         await authors_repo.session.commit()
+
+    @get(path='/faker')
+    async def make_fake_data(self, authors_repo: AuthorRepository, num_of_recs: int | None = 10) -> list[Author]:
+        fake = Faker()
+        data: list[AuthorCreate] = []
+        for _ in range(num_of_recs):
+            d = datetime.strptime(fake.date(), "%Y-%m-%d")
+            n = str(fake.name())
+            data.append(AuthorCreate(name=n, dob=d, id=uuid.uuid4()))
+
+        x = [await self.add_helper(authors_repo, d) for d in data]
+        return x
