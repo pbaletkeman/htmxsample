@@ -4,7 +4,7 @@ import datetime
 import uuid
 
 from faker import Faker
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 from uuid import UUID
 
 import advanced_alchemy
@@ -160,7 +160,8 @@ class AuthorUIController(Controller):
 
     @get('/listing')
     async def index(self, authors_repo: AuthorRepository,
-                    limit_offset: LimitOffset, ) -> Template:
+                    limit_offset: LimitOffset, currentPage: Any = 1, scroll: bool = True) -> Template:
+        limit_offset.limit = 30
         results, total = await authors_repo.list_and_count(limit_offset)
         type_adapter = TypeAdapter(list[Author])
         site_data = OffsetPagination[Author](
@@ -169,7 +170,18 @@ class AuthorUIController(Controller):
             limit=limit_offset.limit,
             offset=limit_offset.offset,
         )
-        return Template(template_name='author.index.mako.html', context={'site_data': site_data})
+        print(not scroll)
+        if currentPage:
+            if int(currentPage) < 2 or not scroll:
+                return Template(
+                    template_name='author.index.mako.html',
+                    context={'site_data': site_data, 'currentPage': currentPage, 'scroll': scroll}
+                )
+            else:
+                return Template(
+                    template_name='author.index.data.mako.html',
+                    context={'site_data': site_data, 'currentPage': currentPage}
+                )
 
 
 async def author_put_helper(author_id: UUID, authors_repo: AuthorRepository, data: AuthorUpdate):

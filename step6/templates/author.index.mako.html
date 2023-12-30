@@ -75,28 +75,21 @@
     </thead>
     <tbody class="authorListing" id="authorListing">
         % if len(site_data.items) > 0:
+            <h2>Page ${int(currentPage)}</h2>
             % for author in site_data.items:
-                <tr id="authorRow${author.id}">
-                    <td>
-                        <input type="checkbox" name="id" value="${author.id}" _="on click
-                        countRows()
-                        ">
-                    </td>
-                    <td><button hx-get="delete/${author.id}" hx-swap="outerHTML" title="delete ${author.id}" hx-target="closest td">delete</button></td>
-                    <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}" hx-target="closest td">edit</button></td>
-                    <td>
-                        ${author.name}
-                    </td>
-                    <td>
-                        % if author.dob:
-                            ${author.dob.strftime('%Y-%m-%d')}
-                        % endif
-                    </td>
-                    <td>
-                        ${author.id}
+                <%include file="author.index.row.mako.html" args="author=author"/>
+            % endfor
+            % if scroll:
+                <tr hx-get="/authors/listing?currentPage=2"
+                    hx-trigger="revealed"
+                    hx-swap="afterend"
+                    hx-push-url="true"
+                >
+                    <td colspan="6">
+                        <h2>Page ${int(currentPage)+1}</h2>
                     </td>
                 </tr>
-            % endfor
+            % endif
         % else:
             <tr><td colspan="6">&nbsp;</td></tr>
         % endif
@@ -114,8 +107,8 @@
 </table>
 <div>
     <h5>Pages</h5>
-    % for num in range(1,round(site_data.total/4 + 0.51)+1):
-        <a href="listing?currentPage=${num}&pageSize=4">${num}</a>
+    % for num in range(1,round(site_data.total/30 + 0.51)+1):
+        <a href="listing?currentPage=${num}&scroll=false&pageSize=30">${num}</a>
     % endfor
 </div>
 
