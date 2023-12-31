@@ -4,6 +4,7 @@ from typing import Optional
 
 from litestar import Litestar, get
 from litestar.config.compression import CompressionConfig
+from litestar.contrib.htmx.request import HTMXRequest
 from litestar.contrib.mako import MakoTemplateEngine
 from litestar.contrib.sqlalchemy.base import UUIDBase
 from litestar.contrib.sqlalchemy.plugins import AsyncSessionConfig, SQLAlchemyAsyncConfig, SQLAlchemyInitPlugin
@@ -25,7 +26,7 @@ def provide_limit_offset_pagination(
         page_size: int = Parameter(
             query="pageSize",
             ge=1,
-            default=10,
+            default=30,
             required=False,
         ),
 ) -> LimitOffset:
@@ -80,6 +81,7 @@ app = Litestar(
         path='static-files',  # path used in links
         directories=['step6/static-files']  # path on the server
     )],
+    request_class=HTMXRequest,
     template_config=TemplateConfig(engine=MakoTemplateEngine, directory="step6/templates"),
     plugins=[SQLAlchemyInitPlugin(config=sqlalchemy_config)],
     dependencies={"limit_offset": Provide(provide_limit_offset_pagination, sync_to_thread=False)},

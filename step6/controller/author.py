@@ -4,29 +4,32 @@ import datetime
 import uuid
 
 from faker import Faker
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING
 from uuid import UUID
 
-import advanced_alchemy
-import litestar
-from litestar.connection import request
-from litestar.status_codes import HTTP_200_OK
 from advanced_alchemy import SQLAlchemyAsyncRepository
-from litestar.response import Template
-from pydantic import TypeAdapter
+from datetime import datetime
 
 from litestar import get
+from litestar.connection import request
+from litestar.contrib.htmx import response
+from litestar.contrib.htmx.request import HTMXRequest, HTMXDetails
+from litestar.contrib.htmx.response import HTMXTemplate
 from litestar.controller import Controller
 from litestar.di import Provide
 from litestar.handlers.http_handlers.decorators import delete, patch, post, put
-from litestar.pagination import OffsetPagination
 from litestar.params import Parameter
+from litestar.pagination import OffsetPagination
 from litestar.repository.filters import LimitOffset
+from litestar.response import Template
+from litestar.status_codes import HTTP_200_OK
+
+from pydantic import TypeAdapter
+
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from step6.model.author import AuthorModel, Author, AuthorCreate, AuthorUpdate, AuthorAndBooks
-from datetime import datetime
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -69,7 +72,7 @@ async def handle_empty_dates(field):
 
 
 class AuthorUIController(Controller):
-    dependencies = {"authors_repo": Provide(provide_authors_repo)}
+    dependencies = {"authors_repo": Provide(provide_authors_repo), "htmx_request": Provide(HTMXRequest)}
     path = "/authors"
     tags = ["Author UI"]
 
@@ -115,9 +118,7 @@ class AuthorUIController(Controller):
         await authors_repo.session.commit()
         return Template(template_name='author.edit-row.mako.html', context={'author': Author.model_validate(obj)})
 
-    @put(
-        path="/update/{author_id:uuid}",
-    )
+    @put(path="/update/{author_id:uuid}",)
     async def put_author(
             self,
             authors_repo: AuthorRepository,
@@ -160,10 +161,13 @@ class AuthorUIController(Controller):
         return Template(template_name='author.edit.mako.html', context={'author': obj})
 
     @get('/listing')
-    async def index(self, authors_repo: AuthorRepository,
-                    limit_offset: LimitOffset, scroll: bool = True) -> Template:
-        limit_offset.limit = 30
-        current_page = 1
+    async def index(self,
+                    htmx_request: HTMXRequest,
+                    authors_repo: AuthorRepository,
+                    limit_offset: LimitOffset,
+                    scroll: bool = True,
+                    current_page: int = Parameter(ge=1, query="currentPage", default=1, required=False)
+                    ) -> Template:
         results, total = await authors_repo.list_and_count(limit_offset)
         type_adapter = TypeAdapter(list[Author])
         site_data = OffsetPagination[Author](
@@ -172,6 +176,10 @@ class AuthorUIController(Controller):
             limit=limit_offset.limit,
             offset=limit_offset.offset,
         )
+
+        if htmx_request.htmx:
+            print(htmx_request.htmx.current_url)
+
         if current_page:
             if int(current_page) < 2 or not scroll:
                 return Template(

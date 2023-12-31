@@ -3,14 +3,20 @@
         <%include file="author.index.row.mako.html" args="author=author"/>
     % endfor
 
-    <tr hx-get="/authors/listing?currentPage=${int(currentPage)+1}"
-        hx-trigger="revealed"
-        hx-swap="afterend"
-        hx-push-url="true"
-    >
-        <td colspan="6">
-            <h2>Page ${int(currentPage)+1}</h2>
-        </td>
-    </tr>
+    <script>
+        countRows()
+    </script>
+
+    % if len(site_data.items) == 30:
+        <tr hx-get="/authors/listing?currentPage=${int(currentPage)+1}"
+            hx-trigger="revealed"
+            hx-swap="afterend"
+            hx-push-url="true"
+        >
+            <td colspan="6">
+                <h2>Page ${int(currentPage)+1}</h2>
+            </td>
+        </tr>
+    % endif
 
 % endif
