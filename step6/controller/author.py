@@ -9,6 +9,7 @@ from uuid import UUID
 
 import advanced_alchemy
 import litestar
+from litestar.connection import request
 from litestar.status_codes import HTTP_200_OK
 from advanced_alchemy import SQLAlchemyAsyncRepository
 from litestar.response import Template
@@ -160,8 +161,9 @@ class AuthorUIController(Controller):
 
     @get('/listing')
     async def index(self, authors_repo: AuthorRepository,
-                    limit_offset: LimitOffset, currentPage: Any = 1, scroll: bool = True) -> Template:
+                    limit_offset: LimitOffset, scroll: bool = True) -> Template:
         limit_offset.limit = 30
+        current_page = 1
         results, total = await authors_repo.list_and_count(limit_offset)
         type_adapter = TypeAdapter(list[Author])
         site_data = OffsetPagination[Author](
@@ -170,17 +172,16 @@ class AuthorUIController(Controller):
             limit=limit_offset.limit,
             offset=limit_offset.offset,
         )
-        print(not scroll)
-        if currentPage:
-            if int(currentPage) < 2 or not scroll:
+        if current_page:
+            if int(current_page) < 2 or not scroll:
                 return Template(
                     template_name='author.index.mako.html',
-                    context={'site_data': site_data, 'currentPage': currentPage, 'scroll': scroll}
+                    context={'site_data': site_data, 'currentPage': current_page, 'scroll': scroll}
                 )
             else:
                 return Template(
                     template_name='author.index.data.mako.html',
-                    context={'site_data': site_data, 'currentPage': currentPage}
+                    context={'site_data': site_data, 'currentPage': current_page}
                 )
 
 

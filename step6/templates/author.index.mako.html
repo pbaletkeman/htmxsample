@@ -80,7 +80,7 @@
                 <%include file="author.index.row.mako.html" args="author=author"/>
             % endfor
             % if scroll:
-                <tr hx-get="/authors/listing?currentPage=2"
+                <!-- <tr hx-get="/authors/listing?currentPage=2"
                     hx-trigger="revealed"
                     hx-swap="afterend"
                     hx-push-url="true"
@@ -88,7 +88,7 @@
                     <td colspan="6">
                         <h2>Page ${int(currentPage)+1}</h2>
                     </td>
-                </tr>
+                </tr> -->
             % endif
         % else:
             <tr><td colspan="6">&nbsp;</td></tr>

@@ -14,6 +14,7 @@ from litestar.repository.filters import LimitOffset
 from litestar.response import Template
 from litestar.static_files import StaticFilesConfig
 from litestar.template.config import TemplateConfig
+from dataclasses import dataclass
 
 from step6.controller.author import AuthorController, AuthorUIController
 from step6.controller.book import BookController
