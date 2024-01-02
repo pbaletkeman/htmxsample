@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import random
 from typing import TYPE_CHECKING
 from uuid import UUID
 
 from advanced_alchemy import SQLAlchemyAsyncRepository
+from faker import Faker
 from pydantic import TypeAdapter
 
 from litestar import get
@@ -195,3 +197,29 @@ class BookController(Controller):
         """
         _ = await book_repo.delete(book_id)
         await book_repo.session.commit()
+
+    @post(path='/faker/{author_ids:str}')
+    async def create_fake_books_per_author(
+            self,
+            book_repo: BookRepository,
+            author_ids: str = Parameter(
+                title='Author Ids',
+                description='List Of Author Ids'
+            ),
+    ) -> list[Book]:
+        book_authors: list[str] = []
+        if len(author_ids) > 30:
+            book_authors = author_ids.split(',')
+        else:
+            book_authors = [author_ids]
+        fake = Faker()
+        returned_list: list[Book] = []
+        for author in book_authors:
+            title: list[str] = []
+            for x in range(random.randint(1, 7)):
+                title.append(str(fake.sentence(nb_words=4)).title()[:-1])
+            data: BulkBookCreate = BulkBookCreate(title=title, author_id=author)
+            books = await self.bulk_book_add_helper(book_repo, data)
+            returned_list.extend(books)
+
+        return returned_list
