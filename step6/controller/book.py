@@ -107,6 +107,9 @@ class BookController(Controller):
         }
         ```
         """
+        return await self.bulk_book_add_helper(book_repo, data)
+
+    async def bulk_book_add_helper(self, book_repo, data):
         new_data = self.Helper.convert_books(data)
         obj = await book_repo.add_many(
             [BookModel(**d) for d in new_data]
