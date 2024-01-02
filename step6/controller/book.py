@@ -15,7 +15,10 @@ from litestar.handlers.http_handlers.decorators import delete, patch, post, put
 from litestar.pagination import OffsetPagination
 from litestar.params import Parameter
 from litestar.repository.filters import LimitOffset
+from sqlalchemy import select, lambda_stmt
 
+from step6.controller.author import provide_authors_repo, AuthorRepository
+from step6.model.author import Author, AuthorModel
 from step6.model.book import BookModel, Book, BookCreate, BookUpdate, BulkBookCreate
 
 if TYPE_CHECKING:
@@ -36,7 +39,7 @@ async def provide_book_repo(db_session: AsyncSession) -> BookRepository:
 class BookController(Controller):
     """Book CRUD"""
 
-    dependencies = {"book_repo": Provide(provide_book_repo)}
+    dependencies = {"book_repo": Provide(provide_book_repo), "authors_repo": Provide(provide_authors_repo)}
     path = "/book"
     tags = ["Book CRUD"]
 
@@ -207,9 +210,13 @@ class BookController(Controller):
             book_repo: BookRepository,
             author_ids: str = Parameter(
                 title='Author Ids',
-                description='List Of Author Ids'
+                description='Comma Separated List Of Author Ids'
             ),
     ) -> list[Book]:
+        """
+        ### Create Fake Book ###
+        Create 1 To 7 Fake Book Records Per A Author Id
+        """
         book_authors: list[str] = []
         if len(author_ids) > 30:
             book_authors = author_ids.split(',')
@@ -222,6 +229,30 @@ class BookController(Controller):
             for x in range(random.randint(1, 7)):
                 title.append(str(fake.sentence(nb_words=4)).title()[:-1])
             data: BulkBookCreate = BulkBookCreate(title=title, author_id=author)
+            books = await self.bulk_book_add_helper(book_repo, data)
+            returned_list.extend(books)
+
+        return returned_list
+
+    @post(path='/faker/all/authors')
+    async def create_fake_books(
+            self,
+            book_repo: BookRepository,
+            authors_repo: AuthorRepository,
+    ) -> list[Book]:
+        """
+        ### Create Fake Book ###
+        Create 1 To 7 Fake Book Records Per A Author
+        """
+
+        fake = Faker()
+        returned_list: list[Book] = []
+        book_authors = await authors_repo.session.execute(statement=select(AuthorModel.id))
+        for author in book_authors:
+            title: list[str] = []
+            for x in range(random.randint(1, 7)):
+                title.append(str(fake.sentence(nb_words=4)).title()[:-1])
+            data: BulkBookCreate = BulkBookCreate(title=title, author_id=str(author.id))
             books = await self.bulk_book_add_helper(book_repo, data)
             returned_list.extend(books)
 
