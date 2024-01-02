@@ -43,3 +43,6 @@ class AuthorAndBooks(BaseModel):
     name: str
     dob: date | None = None
     books: list[BookWithOutAuthor] | None = None
+
+# select * from book where lower(hex(author_id)) = "7beb930003c64466a7c07fd598806539"
+

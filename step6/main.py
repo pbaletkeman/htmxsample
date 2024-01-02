@@ -19,6 +19,10 @@ from dataclasses import dataclass
 
 from step6.controller.author import AuthorController, AuthorUIController
 from step6.controller.book import BookController
+import logging
+
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 
 def provide_limit_offset_pagination(

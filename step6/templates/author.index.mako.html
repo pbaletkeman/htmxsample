@@ -52,7 +52,7 @@
         });
     </script>
 </dialog>
-<table border="1">
+<table border="1" cellpadding="5" cellspacing="1">
     <caption>
         List Of Authors
     </caption>
@@ -70,13 +70,13 @@
                     put selectedCount into the next (<span[id='selectedCount']/>)
                 ">
             </th>
-            <th></th><th></th><th>Name</th><th>dob</th><th>id</th>
+            <th></th><th></th><th>Name</th><th>dob</th><th>id</th><th></th>
         </tr>
     </thead>
     <tbody class="authorListing" id="authorListing">
         % if len(site_data.items) > 0:
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     <h2>Page ${int(currentPage)}</h2>
                 </td>
             </tr>
@@ -89,18 +89,18 @@
                     hx-swap="afterend"
                     hx-push-url="true"
                 >
-                    <td colspan="6">
+                    <td colspan="7">
                         <h2>Page ${int(currentPage)+1}</h2>
                     </td>
                 </tr>
             % endif
         % else:
-            <tr><td colspan="6">&nbsp;</td></tr>
+            <tr><td colspan="7">&nbsp;</td></tr>
         % endif
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <span id="selectedCount">0</span>/<span id="totalRecords">${len(site_data.items)}</span> records
                 <span style="float:right">
                     <small><em>${site_data.total} records</em></small>

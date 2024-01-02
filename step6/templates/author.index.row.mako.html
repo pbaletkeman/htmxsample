@@ -18,4 +18,12 @@
     <td>
         ${author.id}
     </td>
+    <td>
+        <button hx-get="books/${author.id}"
+                hx-swap="outerHTML"
+                title="view ${author.id}"
+                hx-target="closest td">
+            View Books
+        </button>
+    </td>
 </tr>
