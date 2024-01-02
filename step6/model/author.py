@@ -16,7 +16,7 @@ class AuthorModel(UUIDBase):
     name: Mapped[str]
     dob: Mapped[date | None]
 
-    books: Mapped[list[BookModel]] = relationship(back_populates="author", lazy="noload")
+    books: Mapped[list[BookModel]] = relationship(back_populates="author", lazy="selectin")
 
     def __str__(self):
         return str({'name': self.name, 'dob': self.dob, 'id': self.id})
