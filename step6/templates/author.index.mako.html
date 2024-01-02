@@ -75,7 +75,11 @@
     </thead>
     <tbody class="authorListing" id="authorListing">
         % if len(site_data.items) > 0:
-            <h2>Page ${int(currentPage)}</h2>
+            <tr>
+                <td colspan="6">
+                    <h2>Page ${int(currentPage)}</h2>
+                </td>
+            </tr>
             % for author in site_data.items:
                 <%include file="author.index.row.mako.html" args="author=author"/>
             % endfor
