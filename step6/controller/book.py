@@ -51,8 +51,8 @@ class BookUIController(Controller):
             author_id: UUID = Parameter(title='Author Id', description='Author Id of the books to retrieve')
     ) -> Template:
         """
-        ### List All ###
-        List, **book** records for an author
+        ### List All Books For An Author ###
+        List all **book** records for an author
         """
         results: list[BookModel] = await book_repo.list(author_id=author_id)
         books: list[dict[str, str]] = [{'title': r.title, 'id': r.id} for r in results]

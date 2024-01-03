@@ -1,17 +1,37 @@
 <%page args="books"/>
-<table>
-    <tr>
-        <th>Title</th>
-        <th>ID</th>
-    </tr>
-    % for book in books:
-        <tr id="bookRow-${book['id']}">
-            <td>
-                ${book['title']}
-            </td>
-            <td>
-                ${book['id']}
-            </td>
-        </tr>
-    % endfor>
-</table>
+<tr>
+    <td colspan="7" width="100%">
+        <table width="100%" cellpadding="10" cellspacing="5" border="1">
+            <caption>
+                List Of Books (${len(books)})
+            </caption>
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Title</th>
+                    <th>ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                % for i, book in enumerate(books):
+                    <tr id="bookRow-${book['id']}">
+                        <td align="right">
+                            ${i+1}.
+                        </td>
+                        <td>
+                            ${book['title']}
+                        </td>
+                        <td>
+                            ${book['id']}
+                        </td>
+                    </tr>
+            % endfor>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><button>Hide Books</button></td>
+                </tr>
+            </tfoot>
+        </table>
+    </td>
+</tr>
