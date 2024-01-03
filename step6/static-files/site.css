@@ -99,3 +99,15 @@ tr:nth-child(even) {
     }
 }
 /* end table animation */
+
+div.summary {
+  background-color: lightblue;
+  height: 300px;
+  overflow: scroll;
+}
+
+div.detail {
+  background-color: AliceBlue;
+  height: 300px;
+  overflow: scroll;
+}

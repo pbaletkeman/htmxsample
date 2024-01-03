@@ -1,42 +1,44 @@
 <%page args="books","author_id"/>
-<tr id="bookListing-${author_id}" style="animation: tr-fade-in 1.5s ease-in;">
-    <td colspan="7" width="100%">
-        <table width="100%" cellpadding="10" cellspacing="5" border="1">
-            <caption>
-                List Of Books (${len(books)})
-            </caption>
-            <thead>
-                <tr>
-                    <th>&nbsp;</th>
-                    <th>Title</th>
-                    <th>ID</th>
-                </tr>
-            </thead>
-            <tbody>
-                % for i, book in enumerate(books):
-                    <tr id="bookRow-${book['id']}">
-                        <td align="right">
-                            ${i+1}.
-                        </td>
-                        <td>
-                            ${book['title']}
-                        </td>
-                        <td>
-                            ${book['id']}
+<table id="bookListing-${author_id}" style="animation: tr-fade-in 1.5s ease-in;" width="100%">
+    <tr>
+        <td colspan="7" width="100%">
+            <table width="100%" cellpadding="10" cellspacing="5" border="1">
+                <caption>
+                    List Of Books (${len(books)})
+                </caption>
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Title</th>
+                        <th>ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    % for i, book in enumerate(books):
+                        <tr id="bookRow-${book['id']}">
+                            <td align="right">
+                                ${i+1}.
+                            </td>
+                            <td>
+                                ${book['title']}
+                            </td>
+                            <td>
+                                ${book['id']}
+                            </td>
+                        </tr>
+                    % endfor>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <button
+                                onclick="hideBooks('${author_id}')"
+                        >
+                            Hide Books</button>
                         </td>
                     </tr>
-                % endfor>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3">
-                        <button
-                            onclick="hideBooks('${author_id}')"
-                    >
-                        Hide Books</button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </td>
-</tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+</table>

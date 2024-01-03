@@ -52,67 +52,72 @@
         });
     </script>
 </dialog>
-<table border="1" cellpadding="5" cellspacing="1">
-    <caption>
-        List Of Authors
-    </caption>
-    <thead>
-        <tr>
-            <th>
-                <!-- mass select/deselect checkboxes -->
-                <input type="checkbox" name="masterCheck" _="on click
-                    set selectedCount to (<input[name='id']:not(:checked)/>).length
-                    set value to (selectedCount == 0)
-                    repeat in <input[name='id']/>
-                        set it.checked to value
-                        it.click()
-                    end
-                    put selectedCount into the next (<span[id='selectedCount']/>)
-                ">
-            </th>
-            <th></th><th></th><th>Name</th><th>dob</th><th>id</th><th></th>
-        </tr>
-    </thead>
-    <tbody class="authorListing" id="authorListing">
-        % if len(site_data.items) > 0:
+<div class="summary">
+    <table border="1" cellpadding="5" cellspacing="1" width="100%">
+        <caption>
+            List Of Authors
+        </caption>
+        <thead>
             <tr>
-                <td colspan="7">
-                    <h2>Page ${int(currentPage)}</h2>
-                </td>
+                <th>
+                    <!-- mass select/deselect checkboxes -->
+                    <input type="checkbox" name="masterCheck" _="on click
+                        set selectedCount to (<input[name='id']:not(:checked)/>).length
+                        set value to (selectedCount == 0)
+                        repeat in <input[name='id']/>
+                            set it.checked to value
+                            it.click()
+                        end
+                        put selectedCount into the next (<span[id='selectedCount']/>)
+                    ">
+                </th>
+                <th></th><th></th><th>Name</th><th>dob</th><th>id</th><th></th>
             </tr>
-            % for author in site_data.items:
-                <%include file="author.index.row.mako.html" args="author=author"/>
-            % endfor
-            % if scroll:
-                <tr hx-get="/authors/listing?currentPage=2"
-                    hx-trigger="revealed"
-                    hx-swap="afterend"
-                    hx-push-url="true"
-                >
+        </thead>
+        <tbody class="authorListing" id="authorListing">
+            % if len(site_data.items) > 0:
+                <tr>
                     <td colspan="7">
-                        <h2>Page ${int(currentPage)+1}</h2>
+                        <h2>Page ${int(currentPage)}</h2>
                     </td>
                 </tr>
+                % for author in site_data.items:
+                    <%include file="author.index.row.mako.html" args="author=author"/>
+                % endfor
+                % if scroll:
+                    <tr hx-get="/authors/listing?currentPage=2"
+                        hx-trigger="revealed"
+                        hx-swap="afterend"
+                        hx-push-url="true"
+                    >
+                        <td colspan="7">
+                            <h2>Page ${int(currentPage)+1}</h2>
+                        </td>
+                    </tr>
+                % endif
+            % else:
+                <tr><td colspan="7">&nbsp;</td></tr>
             % endif
-        % else:
-            <tr><td colspan="7">&nbsp;</td></tr>
-        % endif
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="7">
-                <span id="selectedCount">0</span>/<span id="totalRecords">${len(site_data.items)}</span> records
-                <span style="float:right">
-                    <small><em>${site_data.total} records</em></small>
-                </span>
-            </td>
-        </tr>
-    </tfoot>
-</table>
-<div>
-    <h5>Pages</h5>
-    % for num in range(1,round(site_data.total/30 + 0.51)+1):
-        <a href="listing?currentPage=${num}&scroll=false&pageSize=30">${num}</a>
-    % endfor
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                    <span id="selectedCount">0</span>/<span id="totalRecords">${len(site_data.items)}</span> records
+                    <span style="float:right">
+                        <small><em>${site_data.total} records</em></small>
+                    </span>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <div>
+        <h5>Pages</h5>
+        % for num in range(1,round(site_data.total/30 + 0.51)+1):
+            <a href="listing?currentPage=${num}&scroll=false&pageSize=30">${num}</a>
+        % endfor
+    </div>
 </div>
+<hr/>
+<div class="detail">
 
+</div>
