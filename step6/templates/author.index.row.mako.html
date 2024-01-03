@@ -22,7 +22,16 @@
         <button hx-get="/book/author-books/${author.id}"
                 hx-swap="afterend"
                 title="view ${author.id}"
-                hx-target="closest tr">
+                hx-target="closest tr"
+                id="swapBooks-${author.id}"
+                onclick="swapVisibility('${author.id}')"
+        >
+            View Books
+        </button>
+        <button id="viewBooks-${author.id}"
+                style="display:none"
+                onclick="showBooks('${author.id}')"
+        >
             View Books
         </button>
     </td>

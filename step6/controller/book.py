@@ -56,7 +56,7 @@ class BookUIController(Controller):
         """
         results: list[BookModel] = await book_repo.list(author_id=author_id)
         books: list[dict[str, str]] = [{'title': r.title, 'id': r.id} for r in results]
-        return Template(template_name='book.data.mako.html', context={'books': books})
+        return Template(template_name='book.data.mako.html', context={'books': books, 'author_id': author_id})
 
 
 class BookController(Controller):

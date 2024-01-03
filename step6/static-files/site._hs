@@ -1,0 +1,33 @@
+def swapVisibility(authorId)
+    add @disabled to #{'viewBooks-' + authorId}
+    transition #{'viewBooks-' + authorId} opacity to 100% over 3 seconds then show #{'viewBooks-' + authorId}
+    hide #{'swapBooks-' + authorId}
+end
+
+def showBooks(authorId)
+    add @disabled to #{'viewBooks-' + authorId}
+--    remove @style from #{'bookListing-' + authorId}
+    beep! #{'bookListing-' + authorId}
+--    add @style='transition: duration:5s; opacity:100%' to  #{'bookListing-' + authorId}
+    transition #{'bookListing-' + authorId} opacity to 100% then show #{'bookListing-' + authorId}
+    beep! #{'bookListing-' + authorId}
+end
+
+def hideBooks(author_id)
+    transition  #{'bookListing-' + author_id} opacity to 0 then hide #{'bookListing-' + author_id}
+    remove @disabled from #{'viewBooks-' + author_id}
+end
+
+def countRows()
+    -- wait for animations to be complete
+    wait 1.1s then
+    set selectedCount to (<input[name='id']:checked/>).length
+    put selectedCount into (<span[id='selectedCount']/>)
+
+    set totalCount to (<input[name='id']/>).length
+    put totalCount into (<span[id='totalRecords']/>)
+
+    if totalCount is selectedCount then
+        set x to (<input[name='masterCheck']/>)
+        set x.checked to true
+end

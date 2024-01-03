@@ -116,18 +116,3 @@
     % endfor
 </div>
 
-<script type="text/hyperscript">
-    def countRows()
-        -- wait for animations to be complete
-        wait 1.1s then
-        set selectedCount to (<input[name='id']:checked/>).length
-        put selectedCount into (<span[id='selectedCount']/>)
-
-        set totalCount to (<input[name='id']/>).length
-        put totalCount into (<span[id='totalRecords']/>)
-
-        if totalCount is selectedCount then
-            set x to (<input[name='masterCheck']/>)
-            set x.checked to true
-    end
-</script>

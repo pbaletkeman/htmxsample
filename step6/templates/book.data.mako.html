@@ -1,5 +1,5 @@
-<%page args="books"/>
-<tr>
+<%page args="books","author_id"/>
+<tr id="bookListing-${author_id}" style="animation: tr-fade-in 1.5s ease-in;">
     <td colspan="7" width="100%">
         <table width="100%" cellpadding="10" cellspacing="5" border="1">
             <caption>
@@ -25,11 +25,16 @@
                             ${book['id']}
                         </td>
                     </tr>
-            % endfor>
+                % endfor>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3"><button>Hide Books</button></td>
+                    <td colspan="3">
+                        <button
+                            onclick="hideBooks('${author_id}')"
+                    >
+                        Hide Books</button>
+                    </td>
                 </tr>
             </tfoot>
         </table>
