@@ -11,10 +11,7 @@ from advanced_alchemy import SQLAlchemyAsyncRepository
 from datetime import datetime
 
 from litestar import get
-from litestar.connection import request
-from litestar.contrib.htmx import response
-from litestar.contrib.htmx.request import HTMXRequest, HTMXDetails
-from litestar.contrib.htmx.response import HTMXTemplate
+from litestar.contrib.htmx.request import HTMXRequest
 from litestar.controller import Controller
 from litestar.di import Provide
 from litestar.handlers.http_handlers.decorators import delete, patch, post, put

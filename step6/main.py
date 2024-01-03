@@ -18,7 +18,7 @@ from litestar.template.config import TemplateConfig
 from dataclasses import dataclass
 
 from step6.controller.author import AuthorController, AuthorUIController
-from step6.controller.book import BookController
+from step6.controller.book import BookController, BookUIController
 import logging
 
 logging.basicConfig()
@@ -71,7 +71,7 @@ class OpenAPIControllerExtra(OpenAPIController):
 
 
 app = Litestar(
-    route_handlers=[AuthorUIController, AuthorController, BookController, index],
+    route_handlers=[AuthorUIController, AuthorController, BookController, BookUIController, index],
     on_startup=[on_startup],
     openapi_config=OpenAPIConfig(
         title='My API', version='1.0.0',

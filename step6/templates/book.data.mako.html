@@ -1,0 +1,17 @@
+<%page args="books"/>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>ID</th>
+    </tr>
+    % for book in books:
+        <tr id="bookRow-${book['id']}">
+            <td>
+                ${book['title']}
+            </td>
+            <td>
+                ${book['id']}
+            </td>
+        </tr>
+    % endfor>
+</table>

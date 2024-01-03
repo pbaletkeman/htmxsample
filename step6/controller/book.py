@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import random
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from uuid import UUID
 
 from advanced_alchemy import SQLAlchemyAsyncRepository
 from faker import Faker
+from litestar.response import Template
 from pydantic import TypeAdapter
 
 from litestar import get
@@ -34,6 +35,28 @@ class BookRepository(SQLAlchemyAsyncRepository[BookModel]):
 async def provide_book_repo(db_session: AsyncSession) -> BookRepository:
     """This provides the default Authors repository."""
     return BookRepository(session=db_session)
+
+
+class BookUIController(Controller):
+    """Book CRUD"""
+
+    dependencies = {"book_repo": Provide(provide_book_repo), "authors_repo": Provide(provide_authors_repo)}
+    path = "/book"
+    tags = ["Book UI"]
+
+    @get(path='/author-books/{author_id:str}')
+    async def list_author_books(
+            self,
+            book_repo: BookRepository,
+            author_id: UUID = Parameter(title='Author Id', description='Author Id of the books to retrieve')
+    ) -> Template:
+        """
+        ### List All ###
+        List, **book** records for an author
+        """
+        results: list[BookModel] = await book_repo.list(author_id=author_id)
+        books: list[dict[str, str]] = [{'title': r.title, 'id': r.id} for r in results]
+        return Template(template_name='book.data.mako.html', context={'books': books})
 
 
 class BookController(Controller):
@@ -212,10 +235,14 @@ class BookController(Controller):
                 title='Author Ids',
                 description='Comma Separated List Of Author Ids'
             ),
+            num_of_books: int = Parameter(
+                title='Number Of Books To Create',
+                default=7
+            ),
     ) -> list[Book]:
         """
         ### Create Fake Book ###
-        Create 1 To 7 Fake Book Records Per A Author Id
+        Create 1 To num_of_books Fake Book Records Per A Author Id
         """
         book_authors: list[str] = []
         if len(author_ids) > 30:
@@ -226,7 +253,7 @@ class BookController(Controller):
         returned_list: list[Book] = []
         for author in book_authors:
             title: list[str] = []
-            for x in range(random.randint(1, 7)):
+            for _ in range(random.randint(1, num_of_books)):
                 title.append(str(fake.sentence(nb_words=4)).title()[:-1])
             data: BulkBookCreate = BulkBookCreate(title=title, author_id=author)
             books = await self.bulk_book_add_helper(book_repo, data)
@@ -239,10 +266,14 @@ class BookController(Controller):
             self,
             book_repo: BookRepository,
             authors_repo: AuthorRepository,
+            num_of_books: int = Parameter(
+                title='Number Of Books To Create',
+                default=7
+            ),
     ) -> list[Book]:
         """
         ### Create Fake Book ###
-        Create 1 To 7 Fake Book Records Per A Author
+        Create 1 To num_of_books Fake Book Records Per A Author
         """
 
         fake = Faker()
@@ -250,7 +281,7 @@ class BookController(Controller):
         book_authors = await authors_repo.session.execute(statement=select(AuthorModel.id))
         for author in book_authors:
             title: list[str] = []
-            for x in range(random.randint(1, 7)):
+            for _ in range(random.randint(1, num_of_books)):
                 title.append(str(fake.sentence(nb_words=4)).title()[:-1])
             data: BulkBookCreate = BulkBookCreate(title=title, author_id=str(author.id))
             books = await self.bulk_book_add_helper(book_repo, data)
