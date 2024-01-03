@@ -6,11 +6,7 @@ end
 
 def showBooks(authorId)
     add @disabled to #{'viewBooks-' + authorId}
---    remove @style from #{'bookListing-' + authorId}
-    beep! #{'bookListing-' + authorId}
---    add @style='transition: duration:5s; opacity:100%' to  #{'bookListing-' + authorId}
     transition #{'bookListing-' + authorId} opacity to 100% then show #{'bookListing-' + authorId}
-    beep! #{'bookListing-' + authorId}
 end
 
 def hideBooks(author_id)

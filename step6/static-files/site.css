@@ -78,13 +78,11 @@ tr:nth-child(even) {
 @keyframes tr-fade-in {
     0% {
         opacity: 0;
-        transform: scaleY(1);
         display: none;
     }
 
     100% {
         opacity: 1;
-        transform: scaleY(1);
         display: block;
     }
 }
@@ -92,13 +90,11 @@ tr:nth-child(even) {
 @keyframes tr-fade-out {
     0% {
         opacity: 1;
-        transform: scaleY(1);
         display: block;
     }
 
     100% {
         opacity: 0;
-        transform: scaleY(1);
         display: none;
     }
 }
