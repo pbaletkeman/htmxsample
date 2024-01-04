@@ -1,12 +1,33 @@
 <%page args="author"/>
 <tr id="authorRow${author.id}">
     <td>
-        <input type="checkbox" name="id" value="${author.id}" _="on click
-        countRows()
+        <input
+                type="checkbox"
+                name="id"
+                value="${author.id}"
+                _="on click countRows()
         ">
     </td>
-    <td><button hx-get="delete/${author.id}" hx-swap="outerHTML" title="delete ${author.id}" hx-target="closest td">delete</button></td>
-    <td><button hx-get="edit/${author.id}" hx-swap="outerHTML" title="edit ${author.id}" hx-target="closest td">edit</button></td>
+    <td>
+        <button
+                hx-get="delete/${author.id}"
+                hx-swap="outerHTML"
+                title="delete ${author.id}"
+                hx-target="closest td"
+        >
+            delete
+        </button>
+    </td>
+    <td>
+        <button
+                hx-get="edit/${author.id}"
+                hx-swap="outerHTML"
+                title="edit ${author.id}"
+                hx-target="closest td"
+        >
+            edit
+        </button>
+    </td>
     <td>
         ${author.name}
     </td>
