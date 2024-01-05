@@ -1,7 +1,7 @@
 <%inherit file="script.mako.html"/>
 <td>
     <button id="show${author.id}" class="show" title="edit ${author.id}">edit</button>
-    <dialog id="dialog${author.id}" class="dialog">
+    <dialog id="dialog${author.id}" class="dialog" open>
         <h4>Edit Author</h4>
         <form >
             <div>
@@ -27,8 +27,6 @@
         </form>
     </dialog>
 </td>
-
 <script type="text/javascript">
     handleAuthorDialog('${author.id}');
-    document.getElementById("dialog${author.id}").showModal();
 </script>
