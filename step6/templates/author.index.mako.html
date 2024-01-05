@@ -13,7 +13,7 @@
 <%block name="intro">
     intro
 </%block>
-<button class="btn btn-outline btn-info" onclick="document.getElementById('dialogNew').showModal();">Add New</button>
+<button class="btn btn-outline btn-info" onclick="dialogNew.showModal()">Add New</button>
 <dialog id="dialogNew" class="dialog">
     <h4>New Author</h4>
     <form id="dialogNewForm">
@@ -27,25 +27,19 @@
                 <input type="date" name="dob" value="">
             </div>
             <div>
-                <button id="closeNew" class="close" onclick="document.getElementById('dialogNew').close();">close</button>
+                <button id="closeNew" class="close" onclick="dialogNew.close()">close</button>
                 <button hx-post="new"
                     hx-swap="beforebegin"
                     hx-ext="json-enc"
                     hx-target=".authorListing tr:first-child"
-                    hx-on::after-request="closeAndReset()"
+                    hx-on::after-request="dialogNewForm.reset(); dialogNew.close()"
                 >
-                Save
+                    Save
                 </button>
             </div>
         </div>
     </form>
     <script>
-        function closeAndReset(){
-            /* reset the new author form after submission and close the dialog */
-            document.querySelector("#dialogNewForm").reset();
-            document.getElementById('dialogNew').close();
-        }
-
         /* need to prevent the default action otherwise the URL parameters are screwed up */
         document.getElementById("closeNew").addEventListener("click", function(event){
             event.preventDefault()

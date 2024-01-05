@@ -52,11 +52,6 @@
 }
 /* end dialog styling */
 
-body,
-button {
-    font-family: system-ui;
-}
-
 tr.htmx-swapping td {
   opacity: 0;
   transition: opacity 1s ease-out;
