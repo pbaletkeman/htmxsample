@@ -27,7 +27,7 @@
                 <input type="date" name="dob" value="">
             </div>
             <div>
-                <button id="closeNew" class="close" onclick="dialogNew.close()">close</button>
+                <button id="closeNew" class="close" onclick="dialogNew.close(); event.preventDefault();">close</button>
                 <button hx-post="new"
                     hx-swap="beforebegin"
                     hx-ext="json-enc"
@@ -39,12 +39,6 @@
             </div>
         </div>
     </form>
-    <script>
-        /* need to prevent the default action otherwise the URL parameters are screwed up */
-        document.getElementById("closeNew").addEventListener("click", function(event){
-            event.preventDefault()
-        });
-    </script>
 </dialog>
 <div class="summary">
     <table border="1" cellpadding="5" cellspacing="1" width="100%">
