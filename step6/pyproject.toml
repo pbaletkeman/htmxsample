@@ -8,9 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = {extras = ["email"], version = "^2.5.2"}
-litestar = {extras = ["full", "sqlalchemy", "Brotli"], version = "^2.4.4"}
+litestar = {extras = ["full", "sqlalchemy", "Brotli"], version = "^2.4.5"}
 aiosqlite = "^0.19.0"
-sqlalchemy = "^2.0.23"
+sqlalchemy = "^2.0.25"
 uvicorn = "^0.25.0"
 Brotli = "1.1.0"
 faker = "^22.0.0"
